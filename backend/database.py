@@ -137,7 +137,7 @@ def init_database():
 
         -- Create default admin user if not exists (password: admin123)
         INSERT INTO admin_users (username, password_hash)
-        VALUES ('admin', 'SHA2:8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918')
+        VALUES ('admin', 'SHA2:240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9')
         ON CONFLICT (username) DO NOTHING;
         """
     else:
@@ -191,7 +191,7 @@ def init_database():
 
         -- Create default admin user if not exists (password: admin123)
         INSERT IGNORE INTO admin_users (username, password_hash)
-        VALUES ('admin', 'SHA2:8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918');
+        VALUES ('admin', 'SHA2:240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9');
         """
     
     # Execute schema
