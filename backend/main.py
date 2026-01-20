@@ -725,12 +725,22 @@ async def health_check():
     return {"status": "healthy", "layer": "1", "service": "license-server"}
 
 # Serve admin panel (if built)
-if os.path.exists("../frontend/dist"):
+# Path handling for different execution contexts
+# When run from backend/ dir: ../frontend/dist
+# When run from root: frontend/dist
+import os
+frontend_dist_path = os.path.join(os.path.dirname(__file__), "..", "frontend", "dist")
+
+if os.path.exists(frontend_dist_path):
     @app.get("/")
     async def serve_admin():
-        return FileResponse("../frontend/dist/index.html")
+        return FileResponse(os.path.join(frontend_dist_path, "index.html"))
     
-    app.mount("/", StaticFiles(directory="../frontend/dist", html=True), name="admin")
+    app.mount("/", StaticFiles(directory=frontend_dist_path, html=True), name="admin")
+    print(f"✅ Serving admin panel from: {frontend_dist_path}")
+else:
+    print(f"⚠️ Admin panel not found at: {frontend_dist_path}")
+    print("   Frontend not available. Use API endpoints directly.")
 
 # Run server
 if __name__ == "__main__":
