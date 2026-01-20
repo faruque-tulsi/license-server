@@ -18,7 +18,7 @@ load_dotenv(override=True)
 
 from models import *
 from database import (
-    init_database, get_connection, get_license, get_all_licenses,
+    init_database, get_connection, dict_cursor, get_license, get_all_licenses,
     get_activation, get_activations_for_license, log_validation,
     update_last_validated
 )
@@ -230,7 +230,7 @@ def import_license_to_local(license_data: dict):
 async def admin_login(payload: AdminLogin):
     """Admin login."""
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = dict_cursor(conn)
     
     cursor.execute("SELECT * FROM admin_users WHERE username = %s", (payload.username,))
     user = cursor.fetchone()
@@ -469,7 +469,7 @@ async def deactivate_device(activation_id: int, admin=Depends(verify_admin)):
 async def get_stats(admin=Depends(verify_admin)):
     """Get license statistics."""
     conn = get_connection()
-    cursor = conn.cursor(dictionary=True)
+    cursor = dict_cursor(conn)
     
     # Total licenses
     cursor.execute("SELECT COUNT(*) as total FROM licenses")
