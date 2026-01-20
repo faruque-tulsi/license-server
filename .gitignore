@@ -55,7 +55,8 @@ logs/
 # Frontend (if exists)
 node_modules/
 frontend/node_modules/
-frontend/dist/
+# Allow frontend/dist for deployment
+# frontend/dist/
 frontend/.next/
 frontend/build/
 npm-debug.log*
