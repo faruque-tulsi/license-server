@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: weighbridge-license-server
+    runtime: python
+    region: oregon  # or singapore for Asia
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && gunicorn -w 2 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:$PORT --timeout 120"
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11"
+      - key: DB_TYPE
+        value: postgresql
+      - key: DATABASE_URL
+        sync: false  # Will be set manually from Neon
+      - key: REMOTE_ADMIN_TOKEN
+        generateValue: true  # Auto-generate secure token
+      - key: REMOTE_URL
+        value: "" # Optional: Cloud sync URL
+    healthCheckPath: /health
