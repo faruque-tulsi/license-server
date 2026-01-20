@@ -229,6 +229,7 @@ def import_license_to_local(license_data: dict):
 @app.post("/admin/login")
 async def admin_login(payload: AdminLogin):
     """Admin login."""
+    print(f"🔐 Login attempt for user: {payload.username}")
     conn = get_connection()
     cursor = dict_cursor(conn)
     
@@ -238,13 +239,18 @@ async def admin_login(payload: AdminLogin):
     conn.close()
     
     if not user:
+        print(f"❌ User not found: {payload.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
     # Simple password check
     password_hash = "SHA2:" + hashlib.sha256(payload.password.encode()).hexdigest()
+    print(f"🔍 Checking password. DB hash start: {str(user['password_hash'])[:10]}")
+    
     if user['password_hash'] != password_hash:
+        print(f"❌ Password mismatch for: {payload.username}")
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
+    print(f"✅ Login successful: {payload.username}")
     # Generate token
     token = secrets.token_urlsafe(32)
     _admin_tokens[token] = user['username']
